@@ -1,17 +1,13 @@
-SHELL := /var/jb/usr/bin/sh
 DIRS := nfq tpws ip2net mdig
 DIRS_MAC := tpws ip2net mdig
 
 TGT := binaries/my
 
-print-shell:
-	@echo "Using shell: $$SHELL"
-
-all: print-shell clean
+all: clean
 	@mkdir -p "$(TGT)"; \
 	for dir in $(DIRS); do \
 		find "$$dir" -type f \( -name "*.c" -o -name "*.h" -o -name "*akefile" \) -exec chmod -x {} \; ; \
-		$(MAKE) -C "$$dir" || exit; \
+		/var/jb/usr/bin/zsh -c '$(MAKE) -C "$$dir" || exit'; \
 		for exe in "$$dir/"*; do \
 			if [ -f "$$exe" ] && [ -x "$$exe" ]; then \
 				mv -f "$$exe" "${TGT}"; \
@@ -24,7 +20,7 @@ bsd: clean
 	@mkdir -p "$(TGT)"; \
 	for dir in $(DIRS); do \
 		find "$$dir" -type f \( -name "*.c" -o -name "*.h" -o -name "*akefile" \) -exec chmod -x {} \; ; \
-		$(MAKE) -C "$$dir" bsd || exit; \
+		/var/jb/usr/bin/zsh -c '$(MAKE) -C "$$dir" bsd || exit'; \
 		for exe in "$$dir/"*; do \
 			if [ -f "$$exe" ] && [ -x "$$exe" ]; then \
 				mv -f "$$exe" "${TGT}"; \
@@ -37,7 +33,7 @@ mac: clean
 	@mkdir -p "$(TGT)"; \
 	for dir in $(DIRS_MAC); do \
 		find "$$dir" -type f \( -name "*.c" -o -name "*.h" -o -name "*akefile" \) -exec chmod -x {} \; ; \
-		$(MAKE) -C "$$dir" mac || exit; \
+		/var/jb/usr/bin/zsh -c '$(MAKE) -C "$$dir" mac || exit'; \
 		for exe in "$$dir/"*; do \
 			if [ -f "$$exe" ] && [ -x "$$exe" ]; then \
 				mv -f "$$exe" "${TGT}"; \
@@ -49,5 +45,5 @@ mac: clean
 clean:
 	@[ -d "$(TGT)" ] && rm -rf "$(TGT)"; \
 	for dir in $(DIRS); do \
-		$(MAKE) -C "$$dir" clean; \
+		/var/jb/usr/bin/zsh -c '$(MAKE) -C "$$dir" clean'; \
 	done
